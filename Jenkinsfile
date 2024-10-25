@@ -9,25 +9,17 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build('2301_ISA2:latest')
-                }
+                sh 'docker build -t 2301_ISA2:latest .'
             }
         }
         stage('Remove Existing Container') {
             steps {
-                script {
-                    // Attempt to remove the container if it exists
-                    sh 'docker rm -f 2301_ISA2 || true'
-                }
+                sh 'docker rm -f 2301_ISA2 || true'
             }
         }
         stage('Run Container') {
             steps {
-                script {
-                    // Run the container in detached mode with port mapping
-                    sh 'docker run -d --name 2301_ISA2 -p 5000:5000 2301_ISA2:latest'
-                }
+                sh 'docker run -d --name 2301_ISA2 -p 5000:5000 2301_ISA2:latest'
             }
         }
     }
