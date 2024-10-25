@@ -1,61 +1,25 @@
 pipeline {
-    agent any
+    agent any // Use any available agent
 
     stages {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build('2301_ISA2:latest')
+                    // Build the Docker image from the Dockerfile in the current directory
+                    bat "docker build -t umang/practice ."
                 }
             }
         }
-        stage('Remove Existing Container') {
+        stage('Build and Run Docker Container') {
             steps {
-                sh 'docker rm -f 2301_ISA2 || true'
-            }
-        }
-        stage('Run Container') {
-            steps {
-                sh 'docker run -d --name 2301_ISA2 2301_ISA2:latest'
-            }
-        }
-    }
-}
+                script {
+                    // Remove any existing container with the same name to avoid conflicts
+                    bat "docker rm -f my-app-container || exit 0"
 
-pipeline {
-    agent any
-
-    stages {
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/mr-spacemango/2301_ISA2'
-            }
-        }
-        
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build('2301_ISA2:latest')
-                }
-            }
-        }
-        
-        stage('Remove Existing Container') {
-            steps {
-                script {
-                    def container = '2301_ISA2'
-                    sh "docker rm -f ${container} || true"
-                }
-            }
-        }
-        
-        stage('Run Container') {
-            steps {
-                script {
-                    docker.image('2301_ISA2:latest').run("-d --name 2301_ISA2-p 5000:5000")
+                    // Run the Docker container in detached mode
+                    bat "docker run -d --name my-app-container umang/practice"
                 }
             }
         }
     }
 }
-
