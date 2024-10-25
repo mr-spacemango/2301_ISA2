@@ -1,16 +1,10 @@
-# Dockerfile
-FROM ubuntu:latest
+FROM ubuntu
 
-# Install Python3, pip, and Flask
-RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
-    pip3 install flask
+RUN apt-get update 
+RUN apt-get install -y python3
+RUN apt-get install -y python3-pip
+RUN apt-get install -y python3-flask
 
-# Copy the application code to the container
-COPY application.py /opt/app/application.py
+COPY . /opt/source-code
 
-# Expose the port Flask will use
-EXPOSE 5000
-
-# Command to run the Flask app
-CMD FLASK_APP=/opt/app/application.py flask run --host=0.0.0.0
+ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
